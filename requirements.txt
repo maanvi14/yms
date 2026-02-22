@@ -1,0 +1,21 @@
+fastapi
+uvicorn
+pydantic
+scikit-learn
+pandas
+numpy
+joblib
+xgboost
+
+# RAG & Vector DB 
+chromadb>=0.4.22
+sentence-transformers>=2.2.2
+
+# Local LLM 
+ollama>=0.1.0
+
+# Text Processing
+langchain-community>=0.0.10
+langchain-text-splitters>=0.0.1
+
+torch>=2.0.0
