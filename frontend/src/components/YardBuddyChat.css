@@ -325,6 +325,138 @@
   border-radius: 3px;
 }
 
+/* ✅ NEW: Zone Status Card */
+.yardbuddy-zone-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+
+.yardbuddy-zone-card h4 {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  color: #475569;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.zone-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.zone-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.zone-item:hover {
+  border-color: #cbd5e1;
+}
+
+.zone-item.high-risk {
+  border-color: #ef4444;
+  background: #fef2f2;
+}
+
+.zone-item.critical-risk {
+  border-color: #dc2626;
+  background: #fee2e2;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+.zone-name {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.zone-capacity {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.zone-alert {
+  margin-left: 4px;
+  font-size: 14px;
+}
+
+.zone-risk {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  background: #fee2e2;
+  color: #991b1b;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.zone-risk.medium {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.zone-risk.low {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.highest-risk {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: #fef3c7;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.yard-metrics {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+}
+
+.metric-label {
+  font-size: 11px;
+  color: #64748b;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.metric-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
 /* Responsive */
 @media (max-width: 480px) {
   .yardbuddy-chat {

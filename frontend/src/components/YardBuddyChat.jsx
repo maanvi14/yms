@@ -7,7 +7,8 @@ const YardBuddyChat = ({ userRole = 'yard-supervisor', yardContext = {}, current
     {
       role: 'assistant',
       content: "Hey! I'm YardBuddy 🚛\nAsk me anything about the yard — trailer locations, pending moves, dock status, SLA rules, or how to use any feature in this app.",
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      toolContext: null
     }
   ]);
   const [inputMessage, setInputMessage] = useState('');
@@ -42,7 +43,7 @@ const YardBuddyChat = ({ userRole = 'yard-supervisor', yardContext = {}, current
         "What's the current yard status?",
         "Show pending moves",
         "Any SLA breaches?",
-        "Dock schedule now"
+        "Which zone has highest risk?"
       ]
     };
     return actionsByPage[currentPage] || actionsByPage.dashboard;
@@ -55,6 +56,105 @@ const YardBuddyChat = ({ userRole = 'yard-supervisor', yardContext = {}, current
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // ✅ FIXED: Properly render all zones from tool_context
+  const renderZoneStatus = (toolContext) => {
+    if (!toolContext) {
+      return null;
+    }
+
+    console.log('🔍 renderZoneStatus called with:', toolContext);
+
+    // Navigate the nested structure: tool_context.predictions.congestion.predictions
+    const predictions = toolContext.predictions || {};
+    const congestion = predictions.congestion || {};
+    const zonePredictions = congestion.predictions || {};
+    
+    const yardState = toolContext.yard_state || {};
+    const zones = yardState.zones || {};
+
+    console.log('📊 Zones from yard_state:', zones);
+    console.log('🔮 Zone Predictions from congestion.predictions:', zonePredictions);
+
+    // Use zonePredictions keys if zones is empty, or merge both
+    const allZoneIds = new Set([
+      ...Object.keys(zones),
+      ...Object.keys(zonePredictions)
+    ]);
+
+    if (allZoneIds.size === 0) {
+      console.log('❌ No zones found');
+      return null;
+    }
+
+    // Calculate metrics
+    const trailerCount = yardState.trailer_count || 0;
+    const dockOccupancy = yardState.dock_occupancy || 0;
+    const activeMoves = yardState.active_moves || 0;
+
+    // Convert to array and sort
+    const zoneEntries = Array.from(allZoneIds).sort();
+
+    return (
+      <div className="yardbuddy-zone-card">
+        <div className="yard-metrics">
+          <div className="metric">
+            <span className="metric-label">Trailers</span>
+            <span className="metric-value">{trailerCount}</span>
+          </div>
+          <div className="metric">
+            <span className="metric-label">Docks</span>
+            <span className="metric-value">{dockOccupancy}/12</span>
+          </div>
+          <div className="metric">
+            <span className="metric-label">Moves</span>
+            <span className="metric-value">{activeMoves}</span>
+          </div>
+        </div>
+
+        <h4>📊 Zone Status ({zoneEntries.length} zones)</h4>
+        <div className="zone-grid">
+          {zoneEntries.map((zone) => {
+            // Get data from both sources
+            const capacity = zones[zone] || 0;
+            const pred = zonePredictions[zone] || {};
+            
+            const riskLevel = pred.risk_level || 'unknown';
+            const isHighRisk = riskLevel === 'HIGH';
+            const isCritical = riskLevel === 'CRITICAL';
+            const isMedium = riskLevel === 'MEDIUM';
+            
+            console.log(`  ${zone}: ${capacity}% - ${riskLevel}`);
+            
+            return (
+              <div 
+                key={zone} 
+                className={`zone-item ${isCritical ? 'critical-risk' : ''} ${isHighRisk ? 'high-risk' : ''} ${isMedium ? 'medium-risk' : ''}`}
+              >
+                <span className="zone-name">{zone}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span className="zone-capacity">{capacity}%</span>
+                  {isCritical && <span className="zone-alert">🚨</span>}
+                  {isHighRisk && <span className="zone-alert">⚠️</span>}
+                  {riskLevel !== 'unknown' && (
+                    <span className={`zone-risk ${riskLevel.toLowerCase()}`}>
+                      {riskLevel}
+                    </span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {congestion.highest_risk_zone && (
+          <div className="highest-risk">
+            ⚠️ Highest Risk: <strong>{congestion.highest_risk_zone}</strong> ({congestion.highest_risk_level})
+          </div>
+        )}
+      </div>
+    );
+  };
 
   const sendMessage = async (messageText) => {
     if (!messageText.trim()) return;
@@ -74,22 +174,21 @@ const YardBuddyChat = ({ userRole = 'yard-supervisor', yardContext = {}, current
         headers: {
           'Content-Type': 'application/json',
         },
+        // ✅ FIXED: Removed yard_context so backend fetches full yard state with all zones
         body: JSON.stringify({
           message: messageText,
           user_role: userRole,
-          session_id: sessionId,
-          yard_context: yardContext
+          session_id: sessionId
         }),
       });
 
       const data = await response.json();
       
-      // Debug log to see what backend returns
-      console.log('API Response:', data);
+      console.log('✅ Full API Response:', JSON.stringify(data, null, 2));
+      console.log('✅ Tool Context:', data.tool_context);
 
-      // Validate response has required fields
       if (!data || typeof data.response !== 'string') {
-        console.error('Invalid API response structure:', data);
+        console.error('❌ Invalid API response structure:', data);
         throw new Error('Invalid response format from server');
       }
 
@@ -98,15 +197,17 @@ const YardBuddyChat = ({ userRole = 'yard-supervisor', yardContext = {}, current
         content: data.response,
         intent: data.intent,
         confidence: data.confidence,
+        toolContext: data.tool_context || null,
         timestamp: data.timestamp || new Date().toISOString()
       };
       setMessages(prev => [...prev, assistantMsg]);
     } catch (error) {
-      console.error('Error:', error);
+      console.error('❌ Error:', error);
       setMessages(prev => [...prev, {
         role: 'assistant',
         content: 'Sorry, I encountered an error. Please try again.',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        toolContext: null
       }]);
     } finally {
       setIsLoading(false);
@@ -126,7 +227,8 @@ const YardBuddyChat = ({ userRole = 'yard-supervisor', yardContext = {}, current
       setMessages([{
         role: 'assistant',
         content: "Hey! I'm YardBuddy 🚛\nAsk me anything about the yard — trailer locations, pending moves, dock status, SLA rules, or how to use any feature in this app.",
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        toolContext: null
       }]);
     } catch (error) {
       console.error('Error clearing chat:', error);
@@ -134,14 +236,11 @@ const YardBuddyChat = ({ userRole = 'yard-supervisor', yardContext = {}, current
   };
 
   const formatMessage = (content) => {
-    // Guard against undefined, null, or non-string content
     if (content === undefined || content === null) {
-      console.error('formatMessage received null/undefined:', content);
       return 'Sorry, I received an empty response.';
     }
     
     if (typeof content !== 'string') {
-      console.error('formatMessage received non-string:', typeof content, content);
       return String(content);
     }
     
@@ -223,6 +322,7 @@ const YardBuddyChat = ({ userRole = 'yard-supervisor', yardContext = {}, current
                     className="yardbuddy-message-text"
                     dangerouslySetInnerHTML={{ __html: formatMessage(msg.content) }}
                   />
+                  {msg.role === 'assistant' && msg.toolContext && renderZoneStatus(msg.toolContext)}
                   {msg.intent && (
                     <span className="yardbuddy-message-meta">
                       Intent: {msg.intent} ({(msg.confidence * 100).toFixed(0)}%)
