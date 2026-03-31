@@ -13,6 +13,7 @@ YardBuddy is an **AI-powered, agentic Yard Management System** that combines **p
 
 The system is designed as a **decision-support platform**, not just a chatbot -
 helping teams anticipate risks, optimize operations, and access knowledge instantly.
+<img width="335" height="523" alt="image" src="https://github.com/user-attachments/assets/45266ed3-0d92-4f15-ac46-6f94155fdc3e" />
 
 ---
 
@@ -122,7 +123,6 @@ Combines:
 | ML Models | XGBoost |
 | Frontend | React |
 | Orchestration | Custom Intent Router + Tool Executor |
-<img width="335" height="523" alt="image" src="https://github.com/user-attachments/assets/45266ed3-0d92-4f15-ac46-6f94155fdc3e" />
 <img width="691" height="486" alt="image" src="https://github.com/user-attachments/assets/743fb8d0-d25b-403d-b5f2-2ff8c6a275ce" />
 <img width="685" height="482" alt="image" src="https://github.com/user-attachments/assets/4e0a612f-7af9-4fee-b1f9-683136087c4c" />
 <img width="685" height="481" alt="image" src="https://github.com/user-attachments/assets/8b492df2-c5a0-4fd6-933b-89f92520fc5c" />
