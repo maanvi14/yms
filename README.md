@@ -124,6 +124,8 @@ Combines:
 | ML Models | XGBoost |
 | Frontend | React |
 | Orchestration | Custom Intent Router + Tool Executor |
+<img width="335" height="523" alt="image" src="https://github.com/user-attachments/assets/45266ed3-0d92-4f15-ac46-6f94155fdc3e" />
+
 
 ---
 
