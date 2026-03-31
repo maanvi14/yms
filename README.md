@@ -13,7 +13,7 @@ YardBuddy is an **AI-powered, agentic Yard Management System** that combines
 **predictive analytics, Retrieval-Augmented Generation (RAG), and a local LLM**  
 to enable **real-time operational intelligence in logistics yards**.
 
-The system is designed as a **decision-support platform**, not just a chatbot —  
+The system is designed as a **decision-support platform**, not just a chatbot -
 helping teams anticipate risks, optimize operations, and access knowledge instantly.
 
 ---
@@ -127,67 +127,3 @@ Combines:
 
 ---
 
-## 🔌 API Overview
-
-### 🤖 AI Chat
-
-```http
-POST /api/ai/chat
-
-Request:
-
-{
-  "message": "What is the current yard status?",
-  "user_role": "supervisor"
-}
-📊 Prediction APIs
-POST /predict/congestion
-POST /predict/global-yard-risk
-POST /predict/sla-risk
-🧪 Health Check
-GET /health/ai
-⚙️ Setup Instructions
-1. Clone Repository
-git clone https://github.com/your-username/yms.git
-cd yms
-2. Create Virtual Environment
-python -m venv venv
-source venv/bin/activate   # Windows: venv\Scripts\activate
-3. Install Dependencies
-pip install -r requirements.txt
-4. Start Local LLM (Ollama)
-ollama run llama3
-5. Run Backend
-uvicorn main:app --reload
-6. (Optional) Train ML Model
-python app/train_congestion_model.py
-💬 Example Queries
-“What is the current yard status?”
-“Which zone has highest congestion risk?”
-“Which trailers are breaching SLA?”
-“What is the SLA dwell time policy?”
-🔐 Design Principles
-Read-only execution (no destructive queries)
-Schema-aware system behavior
-Grounded responses via RAG
-Intent-based routing for reliability
-🚀 Future Scope
-1. Real-Time Data Integration
-
-Integrate IoT sensors and live telemetry for real-time yard state.
-
-2. Role-Based Access Control (RBAC)
-
-Restrict data visibility based on user roles (Ops, Finance, Admin).
-
-3. Fuzzy Query Understanding
-
-Handle ambiguous queries (e.g., “Food” → “Groceries”-like mapping).
-
-4. Production Data Integration
-
-Replace mock trailer lookup with real database systems.
-
-5. Advanced Analytics Dashboard
-
-Interactive UI for predictive insights and historical trends.
