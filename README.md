@@ -9,9 +9,7 @@
 ![React](https://img.shields.io/badge/React-Frontend-blue)
 ![Status](https://img.shields.io/badge/Status-Active-success)
 
-YardBuddy is an **AI-powered, agentic Yard Management System** that combines  
-**predictive analytics, Retrieval-Augmented Generation (RAG), and a local LLM**  
-to enable **real-time operational intelligence in logistics yards**.
+YardBuddy is an **AI-powered, agentic Yard Management System** that combines **predictive analytics, Retrieval-Augmented Generation (RAG), and a local LLM** to enable **real-time operational intelligence in logistics yards**.
 
 The system is designed as a **decision-support platform**, not just a chatbot -
 helping teams anticipate risks, optimize operations, and access knowledge instantly.
