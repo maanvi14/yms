@@ -15,7 +15,8 @@ The system is designed as a **decision-support platform**, not just a chatbot -
 helping teams anticipate risks, optimize operations, and access knowledge instantly.
 
 
-<img width="335" height="523" alt="image" src="https://github.com/user-attachments/assets/45266ed3-0d92-4f15-ac46-6f94155fdc3e" />
+<img width="863" height="1079" alt="image" src="https://github.com/user-attachments/assets/79beda53-af6d-4a00-baad-f112b174dabd" />
+
 
 ---
 
